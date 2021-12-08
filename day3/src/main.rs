@@ -1,9 +1,10 @@
 use std::fs;
+use std::cmp::Ordering;
 
 fn main() {
     let contents = fs::read_to_string("input.txt")
         .expect("Something went wrong reading the input file");
-    let lines = contents.split("\n").collect();
+    let lines: Vec<&str> = contents.split('\n').collect();
 
     let (gamma_rate, epsilon_rate) = part1(&lines);
     println!("Gamma rate was {}, epsilon rate was {} - multiplying gives {}",
@@ -14,7 +15,7 @@ fn main() {
              oxygen_generator_rating, co2_scrubber_rating, oxygen_generator_rating * co2_scrubber_rating)
 }
 
-fn part1(lines: &Vec<&str>) -> (i32, i32) {
+fn part1(lines: &[&str]) -> (i32, i32) {
     let mut gamma_rate = "".to_owned();
     let mut epsilon_rate = "".to_owned();
     for i in 0..lines[0].len() {
@@ -27,8 +28,8 @@ fn part1(lines: &Vec<&str>) -> (i32, i32) {
             i32::from_str_radix(epsilon_rate.as_str(), 2).unwrap());
 }
 
-fn part2(lines: &Vec<&str>) -> (i32, i32) {
-    let mut filtered_oxygen = lines.clone();
+fn part2(lines: &[&str]) -> (i32, i32) {
+    let mut filtered_oxygen = lines.to_owned();
     let mut curr_bit_pos = 0;
     while filtered_oxygen.len() > 1 {
         let oxygen_bits = filtered_oxygen.iter().map(|bit_string| bit_string.chars().nth(curr_bit_pos).unwrap()).collect();
@@ -39,7 +40,7 @@ fn part2(lines: &Vec<&str>) -> (i32, i32) {
         curr_bit_pos += 1;
     }
 
-    let mut filtered_co2 = lines.clone();
+    let mut filtered_co2 = lines.to_owned();
     curr_bit_pos = 0;
     while filtered_co2.len() > 1 {
         let co2_bits = filtered_co2.iter().map(|bit_string| bit_string.chars().nth(curr_bit_pos).unwrap()).collect();
@@ -50,8 +51,8 @@ fn part2(lines: &Vec<&str>) -> (i32, i32) {
         curr_bit_pos += 1;
     }
 
-    return (i32::from_str_radix(filtered_oxygen[0], 2).unwrap(),
-            i32::from_str_radix(filtered_co2[0], 2).unwrap());
+    (i32::from_str_radix(filtered_oxygen[0], 2).unwrap(),
+     i32::from_str_radix(filtered_co2[0], 2).unwrap())
 }
 
 fn most_common_bit(bits: Vec<char>, default: char) -> char {
@@ -64,5 +65,9 @@ fn most_common_bit(bits: Vec<char>, default: char) -> char {
             _ => { println!("Unexpected bit found") }
         }
     }
-    return if ones > zeros { '1' } else if zeros > ones { '0' } else { default };
+    match ones.cmp(&zeros) {
+        Ordering::Less => '0',
+        Ordering::Equal => default,
+        Ordering::Greater => '1'
+    }
 }

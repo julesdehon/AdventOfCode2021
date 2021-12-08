@@ -6,7 +6,7 @@ struct LanternFishSimulation {
 }
 
 impl LanternFishSimulation {
-    fn new(initial_ages: &Vec<u32>) -> LanternFishSimulation {
+    fn new(initial_ages: &[u32]) -> LanternFishSimulation {
         let mut fish_with_age = HashMap::from([
             (0, 0), (1, 0), (2, 0), (3, 0), (4, 0), (5, 0), (6, 0), (7, 0), (8, 0)
         ]);
@@ -14,7 +14,7 @@ impl LanternFishSimulation {
             let x = fish_with_age.get_mut(age).unwrap();
             *x += 1;
         }
-        return LanternFishSimulation {
+        LanternFishSimulation {
             fish_with_age,
         }
     }
@@ -46,10 +46,10 @@ fn main() {
     println!("After 256 days, there were {} fish", num_fish_after_256_days);
 }
 
-fn fish_after_n_days(initial_ages: &Vec<u32>, num_days: u32) -> usize {
+fn fish_after_n_days(initial_ages: &[u32], num_days: u32) -> usize {
     let mut simulation = LanternFishSimulation::new(initial_ages);
     for _ in 0..num_days {
         simulation.pass_day();
     }
-    return simulation.num_fish();
+    simulation.num_fish()
 }

@@ -7,22 +7,22 @@ struct Point(u32, u32);
 fn parse_line(line: &str) -> (Point, Point) {
     let mut raw_points = line.split(" -> ");
 
-    let mut from_coords = raw_points.next().unwrap().split(",");
+    let mut from_coords = raw_points.next().unwrap().split(',');
     let from_point = Point(from_coords.next().unwrap().parse().unwrap(),
                            from_coords.next().unwrap().parse().unwrap());
 
-    let mut to_coords = raw_points.next().unwrap().split(",");
+    let mut to_coords = raw_points.next().unwrap().split(',');
     let to_point = Point(to_coords.next().unwrap().parse().unwrap(),
                          to_coords.next().unwrap().parse().unwrap());
 
-    return (from_point, to_point);
+    (from_point, to_point)
 }
 
 fn main() {
     let contents = fs::read_to_string("input.txt")
         .expect("Something went wrong reading the input file");
-    let lines = contents.split("\n");
-    let segments = lines.map(parse_line).collect();
+    let lines = contents.split('\n');
+    let segments: Vec<(Point, Point)> = lines.map(parse_line).collect();
 
     let points_2_overlaps = part1(&segments);
     println!("There are {} points where at least two lines overlap", points_2_overlaps);
@@ -31,7 +31,7 @@ fn main() {
     println!("Considering diagonals also, there are {} points where at least two lines overlap", points_2_overlaps_with_diagonals);
 }
 
-fn part1(segments: &Vec<(Point, Point)>) -> u32 {
+fn part1(segments: &[(Point, Point)]) -> u32 {
     let mut points_covered: HashMap<Point, u32> = HashMap::new();
     for segment in segments {
         let (p1, p2) = segment;
@@ -48,7 +48,7 @@ fn part1(segments: &Vec<(Point, Point)>) -> u32 {
     return points_covered.iter().fold(0, |accum, (_, curr)| accum + if *curr > 1 { 1 } else { 0 });
 }
 
-fn part2(segments: &Vec<(Point, Point)>) -> u32 {
+fn part2(segments: &[(Point, Point)]) -> u32 {
     let mut points_covered: HashMap<Point, u32> = HashMap::new();
     for segment in segments {
         let (p1, p2) = segment;

@@ -13,7 +13,7 @@ struct Board {
 
 impl Board {
     fn new(number_rows: Vec<Vec<u32>>) -> Board {
-        return Board {
+        Board {
             number_rows,
             marked: vec![],
             row_counts: HashMap::new(),
@@ -33,7 +33,7 @@ impl Board {
                 number_rows[i].push(num);
             }
         }
-        return Board::new(number_rows);
+        Board::new(number_rows)
     }
 
     fn mark(&mut self, num: u32) -> bool {
@@ -56,20 +56,20 @@ impl Board {
                 }
             }
         }
-        return self.bingo;
+        self.bingo
     }
 }
 
 fn main() {
     let contents = fs::read_to_string("input.txt")
         .expect("Something went wrong reading the input file");
-    let lines: Vec<&str> = contents.split("\n").collect();
+    let lines: Vec<&str> = contents.split('\n').collect();
 
     let draws: Vec<u32> = lines[0].split(',').map(|num_str| FromStr::from_str(num_str).unwrap()).collect();
     let part1_boards: Vec<Board> = lines[2..].split(|line| line.is_empty())
         .map(|raw_board_lines| {
             let raw_board = raw_board_lines.join("\n");
-            return Board::parse(&raw_board)
+            Board::parse(&raw_board)
         }).collect();
 
     let part2_boards = part1_boards.clone();
@@ -81,7 +81,7 @@ fn main() {
     println!("Final score of losing board was {}", losing_score);
 }
 
-fn part2(draws: &Vec<u32>, boards: Vec<Board>) -> Option<u32> {
+fn part2(draws: &[u32], boards: Vec<Board>) -> Option<u32> {
     let mut still_playing_boards = boards;
     for draw in draws {
         let mut next_still_playing_boards = vec![];
@@ -96,10 +96,10 @@ fn part2(draws: &Vec<u32>, boards: Vec<Board>) -> Option<u32> {
         }
         still_playing_boards = next_still_playing_boards;
     }
-    return None;
+    None
 }
 
-fn part1(draws: &Vec<u32>, mut boards: Vec<Board>) -> Option<u32> {
+fn part1(draws: &[u32], mut boards: Vec<Board>) -> Option<u32> {
     for draw in draws {
         for board in boards.iter_mut() {
             if board.mark(*draw) {
@@ -107,11 +107,11 @@ fn part1(draws: &Vec<u32>, mut boards: Vec<Board>) -> Option<u32> {
             }
         }
     }
-    return None;
+    None
 }
 
 fn sum_unmarked_numbers(board: &Board) -> u32 {
-    let total_sum = board.number_rows.iter().fold(0, |accum, row| accum + row.iter().fold(0, |accum, num| accum + num));
+    let total_sum = board.number_rows.iter().fold(0, |accum, row| accum + row.iter().sum::<u32>());
     let marked_sum = board.marked.iter().fold(0, |accum, (row_idx, col_idx)| board.number_rows[*row_idx][*col_idx] + accum);
-    return total_sum - marked_sum;
+    total_sum - marked_sum
 }

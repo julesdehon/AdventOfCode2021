@@ -9,8 +9,8 @@ enum Command {
 
 impl Command {
     fn parse(raw: &str) -> Result<Command, &'static str> {
-        let split: Vec<&str> = raw.split(" ").collect();
-        return match split[0] {
+        let split: Vec<&str> = raw.split(' ').collect();
+        match split[0] {
             "forward" => Ok(Command::Forward(FromStr::from_str(split[1]).unwrap())),
             "down" => Ok(Command::Down(FromStr::from_str(split[1]).unwrap())),
             "up" => Ok(Command::Up(FromStr::from_str(split[1]).unwrap())),
@@ -22,7 +22,7 @@ impl Command {
 fn main() {
     let contents = fs::read_to_string("input.txt")
         .expect("Something went wrong reading the input file");
-    let lines = contents.split("\n");
+    let lines = contents.split('\n');
     let commands: Vec<Command> = lines.map(|line| Command::parse(line).unwrap()).collect();
 
     let (pos, depth) = part1(&commands);
@@ -33,7 +33,7 @@ fn main() {
     println!("Reached position {}, and depth {} - multiplying gives {}", pos, depth, pos * depth);
 }
 
-fn part1(commands: &Vec<Command>) -> (i32, i32) {
+fn part1(commands: &[Command]) -> (i32, i32) {
     let mut pos: i32 = 0;
     let mut depth: i32 = 0;
     for command in commands {
@@ -43,10 +43,10 @@ fn part1(commands: &Vec<Command>) -> (i32, i32) {
             Command::Up(i) => { depth -= i }
         }
     }
-    return (pos, depth)
+    (pos, depth)
 }
 
-fn part2(commands: &Vec<Command>) -> (i32, i32) {
+fn part2(commands: &[Command]) -> (i32, i32) {
     let mut pos: i32 = 0;
     let mut depth: i32 = 0;
     let mut aim: i32 = 0;
@@ -57,5 +57,5 @@ fn part2(commands: &Vec<Command>) -> (i32, i32) {
             Command::Up(i) => { aim -= i }
         }
     }
-    return (pos, depth)
+    (pos, depth)
 }
