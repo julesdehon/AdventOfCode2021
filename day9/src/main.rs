@@ -13,7 +13,7 @@ fn main() {
     println!("When you multiply together the szes of the three largest basins you get {}", multiplied_basin_sizes);
 }
 
-fn part1(heights: &Vec<Vec<u32>>) -> Vec<(usize, usize)> {
+fn part1(heights: &[Vec<u32>]) -> Vec<(usize, usize)> {
     let mut low_points = vec![];
     for i in 0..heights.len() {
         for j in 0..heights[i].len() {
@@ -36,7 +36,7 @@ fn part1(heights: &Vec<Vec<u32>>) -> Vec<(usize, usize)> {
     low_points
 }
 
-fn part2(heights: &Vec<Vec<u32>>, low_points: &Vec<(usize, usize)>) -> u32 {
+fn part2(heights: &[Vec<u32>], low_points: &[(usize, usize)]) -> u32 {
     let mut in_basin = HashSet::new();
     let mut basin_sizes = vec![];
     for low_point in low_points {
@@ -49,13 +49,13 @@ fn part2(heights: &Vec<Vec<u32>>, low_points: &Vec<(usize, usize)>) -> u32 {
     return basin_sizes.iter().rev().take(3).product();
 }
 
-fn basin_search(heights: &Vec<Vec<u32>>, coord@(i, j): (usize, usize), already_in_basin: &mut HashSet<(usize, usize)>) -> u32 {
+fn basin_search(heights: &[Vec<u32>], coord@(i, j): (usize, usize), already_in_basin: &mut HashSet<(usize, usize)>) -> u32 {
     if heights[i][j] == 9 || already_in_basin.contains(&(i, j)) {
         return 0;
     }
     already_in_basin.insert(coord);
-    return 1 + if i > 0 { basin_search(heights, (i - 1, j), already_in_basin) } else { 0 }
-             + if i < heights.len() - 1 { basin_search(heights, (i + 1, j), already_in_basin) } else { 0 }
-             + if j > 0 { basin_search(heights, (i, j - 1), already_in_basin) } else { 0 }
-             + if j < heights[i].len() - 1 { basin_search(heights, (i, j + 1), already_in_basin) } else { 0 };
+    1 + if i > 0 { basin_search(heights, (i - 1, j), already_in_basin) } else { 0 }
+      + if i < heights.len() - 1 { basin_search(heights, (i + 1, j), already_in_basin) } else { 0 }
+      + if j > 0 { basin_search(heights, (i, j - 1), already_in_basin) } else { 0 }
+      + if j < heights[i].len() - 1 { basin_search(heights, (i, j + 1), already_in_basin) } else { 0 }
 }
