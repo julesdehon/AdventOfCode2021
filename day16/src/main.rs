@@ -97,21 +97,9 @@ impl Packet {
                     Operator::Product => packets.iter().map(Packet::evaluate).product(),
                     Operator::Minimum => packets.iter().map(Packet::evaluate).min().unwrap(),
                     Operator::Maximum => packets.iter().map(Packet::evaluate).max().unwrap(),
-                    Operator::GreaterThan => {
-                        if Packet::evaluate(&packets[0]) > Packet::evaluate(&packets[1]) {
-                            1
-                        } else { 0 }
-                    },
-                    Operator::LessThan => {
-                        if Packet::evaluate(&packets[0]) < Packet::evaluate(&packets[1]) {
-                            1
-                        } else { 0 }
-                    },
-                    Operator::Equal => {
-                        if Packet::evaluate(&packets[0]) == Packet::evaluate(&packets[1]) {
-                            1
-                        } else { 0 }
-                    },
+                    Operator::GreaterThan => (packets[0].evaluate() > packets[1].evaluate()) as u64,
+                    Operator::LessThan => (packets[0].evaluate() < packets[1].evaluate()) as u64,
+                    Operator::Equal => (packets[0].evaluate() == packets[1].evaluate()) as u64,
                 }
             }
         }
